@@ -1,13 +1,27 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { ConnectedRouter } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
+import configureStore from './store';
 import './index.css';
-import App from './App';
+import App from './App'
 import reportWebVitals from './reportWebVitals';
 
+const history = createBrowserHistory();
+export const { store, persistor } = configureStore(undefined, history);
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  	<Provider store={store}>
+        <PersistGate persistor={persistor} loading={<div>Loading</div>}>
+            <ConnectedRouter history={history}>
+				<Suspense fallback={<div>Loading</div>}>
+					<App />
+				</Suspense>
+            </ConnectedRouter>
+        </PersistGate>
+    </Provider>,
   document.getElementById('root')
 );
 
